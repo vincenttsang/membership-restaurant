@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <title>Spring Boot Powered Backend</title>
+    <meta content="" name="description">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="" rel="stylesheet">
+</head>
+<body class="seren">
+<div class="box" id="box">
+</div>
+<script async defer>
+    console.log("Azuma Seren")
+    console.log("这是一个提供RESTful API的后端")
+
+    function resizeBg() {
+        document.getElementById("box").style.width = document.documentElement.clientWidth.toString() + "px"
+        document.getElementById("box").style.height = document.documentElement.clientHeight.toString() + "px"
+        for (let elementsByClassNameKey in document.getElementsByClassName("seren")) {
+            elementsByClassNameKey.style.width = document.documentElement.clientWidth.toString() + "px"
+            elementsByClassNameKey.style.height = document.documentElement.clientHeight.toString() + "px"
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", resizeBg, false)
+    window.addEventListener("resize", resizeBg)
+</script>
+</body>
+<style>
+    .seren {
+        background-image: url("/image/bg");
+        background-size: cover;
+    }
+
+    .box {
+        background-image: url("/image/sticker");
+        background-repeat: repeat-x;
+        opacity: 0.8;
+    }
+</style>
+</html>

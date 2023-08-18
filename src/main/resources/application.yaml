@@ -1,0 +1,35 @@
+server:
+  port: 8080
+  session:
+    timeout: 7200
+
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/membership-restaurant?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&serverTimezone=UTC-8&allowPublicKeyRetrieval=true&useSSL=true
+    username: root
+    password: Aa114514@1919810.good
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        validator:
+          apply_to_ddl: true
+
+    # 是否顯示SQL語句
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQLDialect
+    open-in-view: false
+  #mvc
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  web:
+    resources:
+      static-locations: classpath:/static/
+  #允許的附件大小
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 8MB
