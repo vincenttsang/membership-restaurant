@@ -127,7 +127,7 @@ class MembershipRestaurantApplicationTests {
                 room.setRoomImage("http://" + host + ":8080/image/16x9");
                 roomRepository.save(room);
             }
-            for (int i = 815; i < (815 + 2); i++) {
+            for (int i = 900; i < (900 + 60); i++) {
                 Room room = new Room();
                 room.setHotel(hotelRepository.findHotelByName("田所酒店"));
                 room.setRoomDetail("进入昏睡房后可以饮用昏睡红茶");
