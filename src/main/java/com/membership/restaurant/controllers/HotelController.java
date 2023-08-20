@@ -44,7 +44,7 @@ public class HotelController {
     }
 
 
-    @GetMapping(value = "/searchHotel", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/searchHotel", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> searchHotel(HttpServletResponse response, @RequestBody @Valid SearchRequest searchRequest) {
         Map responseObj = new HashMap();
         List datum = hotelService.search(searchRequest.getArea(), LocalDate.parse(searchRequest.getStartDate()), LocalDate.parse(searchRequest.getEndDate()), searchRequest.getKeywords());
@@ -101,10 +101,6 @@ public class HotelController {
         return responseObj;
     }
 
-    /*
-        TODO:
-            Not finished yet.
-     */
     @GetMapping(value = "/hotelDetail", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map getHotelDetail(@RequestParam @NotNull String session_id, HttpServletResponse response) {
         HashMap<String, Object> responseObj = new HashMap();
