@@ -27,8 +27,6 @@ import java.util.*;
 @RestController
 @Log4j2
 public class HotelController {
-    private final RoomRepository roomRepository;
-    private final HotelRepository hotelRepository;
     private final HotelService hotelService;
 
     private final AuthService authService;
@@ -44,8 +42,6 @@ public class HotelController {
         this.authService = authService;
         this.roomService = roomService;
         this.orderFormService = orderFormService;
-        this.hotelRepository = hotelRepository;
-        this.roomRepository = roomRepository;
     }
 
     @PostMapping(value = "/updateRoom", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -237,7 +233,7 @@ public class HotelController {
     private HotelDetailData getHotelsDetailData() {
         HotelDetailData hotelDetailData = new HotelDetailData();
         List<HotelDetailElement> hotelDetailElements = new LinkedList<>();
-        List<Hotel> hotels = hotelRepository.findAll();
+        List<Hotel> hotels = hotelService.getHotels();
         List<OrderForm> orderForms = orderFormService.getAll();
 
         for (Hotel hotel : hotels) {
