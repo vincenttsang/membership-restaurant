@@ -33,7 +33,8 @@ public class HotelService {
         this.roomRepository = roomRepository;
     }
 
-    public static List<Room> getFilteredRooms(String area, LocalDate startDate, LocalDate endDate, String keywords, List<Room> rooms, List<OrderForm> orderForms) {
+    @org.jetbrains.annotations.NotNull
+    private static List<Room> getFilteredRooms(String area, LocalDate startDate, LocalDate endDate, String keywords, List<Room> rooms, List<OrderForm> orderForms) {
         List<Room> filteredRooms = new LinkedList<>();
         for (Room room : rooms) {
             boolean isAvailable = true;
@@ -131,5 +132,18 @@ public class HotelService {
             }
         }
         return getFilteredRooms(null, LocalDate.parse(bookRequest.getStartDate()), LocalDate.parse(bookRequest.getEndDate()), null, rooms, orderForms);
+    }
+
+    public List<Room> getBookedRoomsToday(Hotel hotel) {
+        List<Room> allRooms = roomRepository.findRoomsByHotel(hotel);
+        List<OrderForm> orderForms = fuckRepository.findAll();
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+        allRooms.removeAll(getFilteredRooms(null, today, tomorrow, null, allRooms, orderForms));
+        return allRooms;
+    }
+
+    public List<Hotel> getHotels() {
+        return hotelRepository.findAll();
     }
 }

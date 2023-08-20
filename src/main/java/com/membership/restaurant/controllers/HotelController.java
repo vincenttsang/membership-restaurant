@@ -3,10 +3,9 @@ package com.membership.restaurant.controllers;
 import com.membership.restaurant.dtos.requests.AddHotelRequest;
 import com.membership.restaurant.dtos.requests.BookRequest;
 import com.membership.restaurant.dtos.requests.SearchRequest;
-import com.membership.restaurant.dtos.responses.GetHotelResponse;
-import com.membership.restaurant.dtos.responses.GetHotelRoom;
-import com.membership.restaurant.dtos.responses.GetHotelRoomName;
+import com.membership.restaurant.dtos.responses.*;
 import com.membership.restaurant.entities.*;
+import com.membership.restaurant.repositories.HotelRepository;
 import com.membership.restaurant.services.AuthService;
 import com.membership.restaurant.services.FuckService;
 import com.membership.restaurant.services.HotelService;
@@ -19,12 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
 @RestController
 @Log4j2
 public class HotelController {
+    private final HotelRepository hotelRepository;
     private final HotelService hotelService;
 
     private final AuthService authService;
@@ -33,11 +34,13 @@ public class HotelController {
     private final FuckService fuckService;
 
     @Autowired
-    public HotelController(HotelService hotelService, AuthService authService, RoomService roomService, FuckService fuckService) {
+    public HotelController(HotelService hotelService, AuthService authService, RoomService roomService, FuckService fuckService,
+                           HotelRepository hotelRepository) {
         this.hotelService = hotelService;
         this.authService = authService;
         this.roomService = roomService;
         this.fuckService = fuckService;
+        this.hotelRepository = hotelRepository;
     }
 
 
@@ -47,6 +50,17 @@ public class HotelController {
         List datum = hotelService.search(searchRequest.getArea(), LocalDate.parse(searchRequest.getStartDate()), LocalDate.parse(searchRequest.getEndDate()), searchRequest.getKeywords());
         responseObj.put("code", HttpServletResponse.SC_OK);
         responseObj.put("data", datum);
+        response.setStatus(HttpServletResponse.SC_OK);
+        return responseObj;
+    }
+
+    @GetMapping(value = "/getAllHotels", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> getALlHotels(HttpServletResponse response) {
+        HashMap<String, Object> responseObj = new HashMap();
+        List datum = hotelService.getHotels();
+        responseObj.put("code", HttpServletResponse.SC_OK);
+        responseObj.put("data", datum);
+        response.setStatus(HttpServletResponse.SC_OK);
         return responseObj;
     }
 
@@ -91,8 +105,8 @@ public class HotelController {
         TODO:
             Not finished yet.
      */
-    @GetMapping(value = "/hotelDetail/{hotel_id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map getHotelDetail(@PathVariable Integer hotel_id, @RequestParam @NotNull String session_id, HttpServletResponse response) {
+    @GetMapping(value = "/hotelDetail", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map getHotelDetail(@RequestParam @NotNull String session_id, HttpServletResponse response) {
         HashMap<String, Object> responseObj = new HashMap();
         HashMap<String, Object> data = new HashMap();
         if (!authService.validate(session_id)) {
@@ -110,12 +124,63 @@ public class HotelController {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return responseObj;
         }
-        /*
-            TODO:
-                need to return hotelDetail's object
-         */
+
+        HotelDetailData hotelDetailData = getHotelsDetailData();
+        responseObj.put("code", HttpServletResponse.SC_OK);
+        responseObj.put("data", hotelDetailData);
         response.setStatus(HttpServletResponse.SC_OK);
         return responseObj;
+    }
+
+    @org.jetbrains.annotations.NotNull
+    private HotelDetailData getHotelsDetailData() {
+        HotelDetailData hotelDetailData = new HotelDetailData();
+        List<HotelDetailElement> hotelDetailElements = new LinkedList<>();
+        List<Hotel> hotels = hotelRepository.findAll();
+        List<OrderForm> orderForms = fuckService.getAll();
+
+        for(Hotel hotel : hotels) {
+            HotelDetailElement hotelDetailElement = new HotelDetailElement();
+            List<Room> bookedRooms = hotelService.getBookedRoomsToday(hotel);
+            List<Room> rooms = roomService.getRoomsByHotel(hotel);
+            int roomCount = 0;
+            int consumerCount = 0;
+            String intro = hotel.getIntro();
+            String picture = hotel.getPicture();
+            BigDecimal averagePrice = new BigDecimal(0);
+            BigDecimal totalMoney = new BigDecimal(0);
+
+            int i = 0;
+            for(Room room : rooms) {
+                averagePrice = averagePrice.add(room.getRoomPrice());
+                i += 1;
+            }
+            averagePrice = averagePrice.divide(new BigDecimal(i), 2, BigDecimal.ROUND_HALF_UP);
+
+            for(Room room : bookedRooms) {
+                consumerCount += 1;
+                totalMoney = totalMoney.add(room.getRoomPrice());
+            }
+
+            for(OrderForm orderForm : orderForms) {
+                if (orderForm.getHotel().getName().equals(hotel.getName())) {
+                    roomCount += orderForm.getRoomNum();
+                }
+            }
+
+            hotelDetailElement.setName(hotel.getName());
+            hotelDetailElement.setConsumer(consumerCount);
+            hotelDetailElement.setIntro(intro);
+            hotelDetailElement.setPicture(picture);
+            hotelDetailElement.setRoomCount(roomCount);
+            hotelDetailElement.setPrice(averagePrice);
+            hotelDetailElement.setTotalMoney(totalMoney);
+            hotelDetailElement.setId(hotel.getId());
+            hotelDetailElement.setArea(hotel.getArea());
+            hotelDetailElements.add(hotelDetailElement);
+        }
+        hotelDetailData.setHotel(hotelDetailElements);
+        return hotelDetailData;
     }
 
     @GetMapping(value = "/searchHotel/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
