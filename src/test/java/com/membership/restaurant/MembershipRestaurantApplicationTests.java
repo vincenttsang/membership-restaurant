@@ -23,9 +23,8 @@ class MembershipRestaurantApplicationTests {
     @Autowired
     RoomRepository roomRepository;
 
-    //private String host = "10.25.160.110";
-
-    private String host = "127.0.0.1";
+    private String host = "43.156.9.217";
+    //private String host = "127.0.0.1";
 
     @Test
     void contextLoads() {
