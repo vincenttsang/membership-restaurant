@@ -36,7 +36,7 @@ public class RoomService {
     }
 
     public void deleteRoom(String roomId) {
-        orderFormRepository.deleteOrderFormsByRoomId(roomId);
+        orderFormRepository.deleteOrderFormsByRoomId(this.getRoomByRoomId(roomId));
         roomRepository.deleteRoomByRoomId(roomId);
     }
 

@@ -2,6 +2,7 @@ package com.membership.restaurant.repositories;
 
 import com.membership.restaurant.entities.Hotel;
 import com.membership.restaurant.entities.OrderForm;
+import com.membership.restaurant.entities.Room;
 import com.membership.restaurant.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -22,5 +23,5 @@ public interface OrderFormRepository extends JpaRepository<OrderForm, Integer> {
 
     @Transactional
     @Modifying
-    void deleteOrderFormsByRoomId(String roomId);
+    void deleteOrderFormsByRoomId(Room room);
 }
