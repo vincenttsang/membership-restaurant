@@ -6,8 +6,8 @@ import com.membership.restaurant.entities.Hotel;
 import com.membership.restaurant.entities.OrderForm;
 import com.membership.restaurant.entities.OrderState;
 import com.membership.restaurant.entities.Room;
-import com.membership.restaurant.repositories.FuckRepository;
 import com.membership.restaurant.repositories.HotelRepository;
+import com.membership.restaurant.repositories.OrderFormRepository;
 import com.membership.restaurant.repositories.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,13 +22,13 @@ import java.util.Map;
 public class HotelService {
     HotelRepository hotelRepository;
 
-    FuckRepository fuckRepository;
+    OrderFormRepository orderFormRepository;
 
     RoomRepository roomRepository;
 
     @Autowired
-    public HotelService(HotelRepository hotelRepository, FuckRepository fuckRepository, RoomRepository roomRepository) {
-        this.fuckRepository = fuckRepository;
+    public HotelService(HotelRepository hotelRepository, OrderFormRepository orderFormRepository, RoomRepository roomRepository) {
+        this.orderFormRepository = orderFormRepository;
         this.hotelRepository = hotelRepository;
         this.roomRepository = roomRepository;
     }
@@ -73,7 +73,7 @@ public class HotelService {
             return new LinkedList<>();
         }
 
-        List<OrderForm> orderForms = fuckRepository.findAll();
+        List<OrderForm> orderForms = orderFormRepository.findAll();
         List<Room> rooms = roomRepository.findAll();
         List<SearchHotelResponse> responses = new LinkedList<>();
 
@@ -118,8 +118,14 @@ public class HotelService {
         return hotelRepository.findById(id).orElse(null);
     }
 
+    public void deleteHotel(int id) {
+        orderFormRepository.deleteOrderFormsByHotel(this.getHotel(id));
+        roomRepository.deleteRoomsByHotel(this.getHotel(id));
+        hotelRepository.deleteHotelById(id);
+    }
+
     public List<Room> getAvailableRoomsForBooking(BookRequest bookRequest) {
-        List<OrderForm> orderForms = fuckRepository.findAll();
+        List<OrderForm> orderForms = orderFormRepository.findAll();
         List<Room> allRooms = roomRepository.findAll();
         List<Room> rooms = new LinkedList<>();
         bookRequest.getRoomType();
@@ -136,7 +142,7 @@ public class HotelService {
 
     public List<Room> getBookedRoomsToday(Hotel hotel) {
         List<Room> allRooms = roomRepository.findRoomsByHotel(hotel);
-        List<OrderForm> orderForms = fuckRepository.findAll();
+        List<OrderForm> orderForms = orderFormRepository.findAll();
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1);
         allRooms.removeAll(getFilteredRooms(null, today, tomorrow, null, allRooms, orderForms));

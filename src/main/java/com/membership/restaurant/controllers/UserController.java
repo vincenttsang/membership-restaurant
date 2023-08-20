@@ -5,7 +5,7 @@ import com.membership.restaurant.dtos.requests.UpdateUserRequest;
 import com.membership.restaurant.dtos.responses.UserResponse;
 import com.membership.restaurant.entities.User;
 import com.membership.restaurant.services.AuthService;
-import com.membership.restaurant.services.FuckService;
+import com.membership.restaurant.services.OrderFormService;
 import com.membership.restaurant.services.UserService;
 import com.membership.restaurant.utils.BCryptHashGenerator;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,16 +22,16 @@ import java.util.Map;
 @RestController
 @Log4j2
 public class UserController {
-    private final FuckService fuckService;
+    private final OrderFormService orderFormService;
     private final AuthService authService;
 
     private final UserService userService;
 
     @Autowired
-    public UserController(AuthService authService, UserService userService, FuckService fuckService) {
+    public UserController(AuthService authService, UserService userService, OrderFormService orderFormService) {
         this.authService = authService;
         this.userService = userService;
-        this.fuckService = fuckService;
+        this.orderFormService = orderFormService;
     }
 
     @GetMapping(value = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -130,7 +130,7 @@ public class UserController {
             return responseObj;
         }
         User user = authService.getUser(sessionId);
-        List orders = fuckService.findAllByUser(user);
+        List orders = orderFormService.findAllByUser(user);
         data.put("orders", orders);
         responseObj.put("data", data);
 

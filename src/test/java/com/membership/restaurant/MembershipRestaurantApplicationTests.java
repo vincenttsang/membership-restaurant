@@ -5,7 +5,6 @@ import com.membership.restaurant.repositories.HotelRepository;
 import com.membership.restaurant.repositories.RoomRepository;
 import com.membership.restaurant.services.UserService;
 import com.membership.restaurant.utils.BCryptHashGenerator;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,6 +44,20 @@ class MembershipRestaurantApplicationTests {
     }
 
     @Test
+    void addAdminUser() {
+        User user = userService.getUserByName("田所浩二");
+        String password = BCryptHashGenerator.generateHash("34a611c6f7934545f1f0c13a61ee2eea");
+        if (user == null) {
+            user = new User();
+        }
+        user.setPassword(password);
+        user.setTel("+852-11451419");
+        user.setAccount("田所浩二");
+        user.setRole(Role.ADMIN);
+        userService.saveUser(user);
+    }
+
+    @Test
     void addHotelAndRoom() {
         if (hotelRepository.findHotelByName("淳平酒店") == null) {
             Hotel hotel = new Hotel();
@@ -69,7 +82,7 @@ class MembershipRestaurantApplicationTests {
         }
 
         if (roomRepository.findRoomsByRoomName("雷普房").isEmpty()) {
-            for (int i = 114514; i < (114514 + 10); i++) {
+            for (int i = 114514; i < (114514 + 50); i++) {
                 Room room = new Room();
                 room.setHotel(hotelRepository.findHotelByName("淳平酒店"));
                 room.setRoomDetail("进入雷普房后可以雷普其他人");
@@ -86,7 +99,7 @@ class MembershipRestaurantApplicationTests {
         }
 
         if (roomRepository.findRoomsByRoomName("昏睡房").isEmpty()) {
-            for (int i = 1919; i < (1919 + 2); i++) {
+            for (int i = 1919; i < (1919 + 60); i++) {
                 Room room = new Room();
                 room.setHotel(hotelRepository.findHotelByName("田所酒店"));
                 room.setRoomDetail("进入昏睡房后可以饮用昏睡红茶");
@@ -100,7 +113,7 @@ class MembershipRestaurantApplicationTests {
                 room.setRoomImage("http://" + host + ":8080/image/16x9");
                 roomRepository.save(room);
             }
-            for (int i = 810; i < (810 + 2); i++) {
+            for (int i = 810; i < (810 + 60); i++) {
                 Room room = new Room();
                 room.setHotel(hotelRepository.findHotelByName("田所酒店"));
                 room.setRoomDetail("进入昏睡房后可以饮用昏睡红茶");
