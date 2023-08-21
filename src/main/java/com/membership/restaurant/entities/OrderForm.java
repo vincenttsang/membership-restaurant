@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -68,7 +69,13 @@ public class OrderForm {
     private String remarks;
 
     @Column(name = "time")
-    private String time;
+    @JsonProperty("time")
+    private LocalDateTime time;
+
+    @PrePersist
+    public void setTime() {
+        this.time = LocalDateTime.now();
+    }
 
     @Column(name = "start_date")
     @JsonProperty("start_date")
