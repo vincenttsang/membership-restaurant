@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -42,6 +43,10 @@ public class OrderForm {
     @JsonIdentityReference(alwaysAsId = true)
     @JoinColumn(name = "room_type", referencedColumnName = "room_type")
     private String roomType;
+
+    @JsonProperty("room_image")
+    @Column(name = "room_image")
+    private String roomImage;
 
     @ManyToOne
     @JsonProperty("user_account")
@@ -92,4 +97,8 @@ public class OrderForm {
     @Column(name = "room_num")
     @JsonProperty("room_num")
     private int roomNum;
+
+    @Column(name = "price")
+    @JsonProperty("price")
+    private BigDecimal price;
 }

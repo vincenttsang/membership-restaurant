@@ -292,6 +292,7 @@ public class HotelController {
             return responseObj;
         }
         User user = authService.getUser(session_id);
+        /*
         if (!(user.getRole() == Role.ADMIN || (user.getRole() == Role.ROOT))) {
             responseObj.put("code", HttpServletResponse.SC_FORBIDDEN);
             data.put("message", "403 FORBIDDEN - You are not admin nor root user.");
@@ -299,6 +300,7 @@ public class HotelController {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return responseObj;
         }
+         */
         OrderForm orderForm = orderFormService.getOrderFormById(order_id);
         if (orderForm == null) {
             responseObj.put("code", HttpServletResponse.SC_NOT_FOUND);
@@ -401,12 +403,16 @@ public class HotelController {
             orderForm.setEndDate(LocalDate.parse(bookRequest.getEndDate()));
             orderForm.setRoomId(availRooms.get(i));
             orderForm.setRoomType(availRooms.get(i).getRoomType());
+            orderForm.setRoomImage(availRooms.get(i).getRoomImage());
             orderForm.setBookerId(bookRequest.getBookerId());
             orderForm.setBookerTel(bookRequest.getBookerTel());
             orderForm.setBookerName(bookRequest.getBookerName());
             orderForm.setState(OrderState.IS_PAID);
             orderForm.setUser(user);
             orderForm.setUserNum(bookRequest.getUserNum());
+            BigDecimal price = new BigDecimal(0);
+            price = price.add(availRooms.get(i).getRoomPrice());
+            orderForm.setPrice(price);
             bookedRooms.add(new GetHotelRoom(availRooms.get(i)));
             orderFormService.saveOrderForm(orderForm);
         }
