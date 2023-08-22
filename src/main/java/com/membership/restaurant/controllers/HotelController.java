@@ -252,7 +252,9 @@ public class HotelController {
                 averagePrice = averagePrice.add(room.getRoomPrice());
                 i += 1;
             }
-            averagePrice = averagePrice.divide(new BigDecimal(i), 2, BigDecimal.ROUND_HALF_UP);
+            if (i != 0) {
+                averagePrice = averagePrice.divide(new BigDecimal(i), 2, BigDecimal.ROUND_HALF_UP);
+            }
 
             for (Room room : bookedRooms) {
                 consumerCount += 1;
