@@ -1,5 +1,6 @@
 package com.membership.restaurant.services;
 
+import com.membership.restaurant.entities.Hotel;
 import com.membership.restaurant.entities.OrderForm;
 import com.membership.restaurant.entities.User;
 import com.membership.restaurant.repositories.OrderFormRepository;
@@ -31,5 +32,9 @@ public class OrderFormService {
 
     public OrderForm getOrderFormById(int id) {
         return orderFormRepository.findOrderFormById(id);
+    }
+
+    public List findAllByHotel(Hotel hotel) {
+        return orderFormRepository.findOrderFormsByHotel(hotel);
     }
 }

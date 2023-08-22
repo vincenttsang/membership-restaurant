@@ -24,4 +24,6 @@ public interface OrderFormRepository extends JpaRepository<OrderForm, Integer> {
     @Transactional
     @Modifying
     void deleteOrderFormsByRoomId(Room room);
+
+    List<OrderForm> findOrderFormsByHotel(Hotel hotel);
 }
