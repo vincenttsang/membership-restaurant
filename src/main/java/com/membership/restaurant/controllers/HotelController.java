@@ -259,7 +259,7 @@ public class HotelController {
 
             for (OrderForm orderForm : orderForms) {
                 if (orderForm.getHotel().getName().equals(hotel.getName())) {
-                    roomCount += orderForm.getRoomNum();
+                    roomCount += 1;
                 }
             }
 
