@@ -8,8 +8,9 @@
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <link href="" rel="stylesheet">
 </head>
-<body class="seren">
+<body id="seren">
 <div class="box" id="box">
+    <canvas id="myCanvas"></canvas>
 </div>
 <script async defer>
     console.log("Azuma Seren")
@@ -18,18 +19,69 @@
     function resizeBg() {
         document.getElementById("box").style.width = document.documentElement.clientWidth.toString() + "px"
         document.getElementById("box").style.height = document.documentElement.clientHeight.toString() + "px"
-        for (let elementsByClassNameKey in document.getElementsByClassName("seren")) {
-            elementsByClassNameKey.style.width = document.documentElement.clientWidth.toString() + "px"
-            elementsByClassNameKey.style.height = document.documentElement.clientHeight.toString() + "px"
-        }
+        document.getElementById("seren").style.width = document.documentElement.clientWidth.toString() + "px"
+        document.getElementById("seren").style.height = document.documentElement.clientHeight.toString() + "px"
+        document.getElementById("myCanvas").width = document.documentElement.clientWidth
+        document.getElementById("myCanvas").height = document.documentElement.clientHeight
     }
 
     document.addEventListener("DOMContentLoaded", resizeBg, false)
     window.addEventListener("resize", resizeBg)
 </script>
+
+<script>
+    // 获取画布元素和上下文
+    let canvas = document.getElementById("myCanvas");
+    let ctx = canvas.getContext("2d");
+
+    document.getElementById("myCanvas").width = document.documentElement.clientWidth
+    document.getElementById("myCanvas").height = document.documentElement.clientHeight
+
+    // 图像属性
+    let imageWidth = 200;
+    let imageHeight = 200;
+
+    let imageX = (canvas.width - imageWidth) / 2; // 图像初始位置的X坐标
+    let imageY = (canvas.height - imageHeight) / 2; // 图像初始位置的Y坐标
+    let dx = 2; // 图像每次移动的X距离
+    let dy = 2; // 图像每次移动的Y距离
+
+    // 绘制图像
+    function drawImage() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // 清除画布
+        ctx.drawImage(ballImage, imageX, imageY, imageWidth, imageHeight); // 绘制图像
+    }
+
+    // 更新图像位置并处理碰撞
+    function updateImage() {
+        // 更新图像位置
+        imageX += dx;
+        imageY += dy;
+
+        // 检查碰撞
+        if (imageX + imageWidth > canvas.width || imageX < 0) {
+            dx = -dx; // 反弹X方向
+        }
+
+        if (imageY + imageHeight > canvas.height || imageY < 0) {
+            dy = -dy; // 反弹Y方向
+        }
+    }
+
+    // 加载图像
+    let ballImage = new Image();
+    ballImage.src = "/image/sticker";
+    ballImage.onload = function () {
+        setInterval(function () {
+            updateImage();
+            drawImage();
+        }, 10); // 每10毫秒更新和绘制图像
+    };
+</script>
+
 </body>
 <style>
-    .seren {
+    #seren {
         background-image: url("/image/bg");
         background-size: cover;
     }
