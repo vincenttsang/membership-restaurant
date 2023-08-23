@@ -323,6 +323,7 @@ public class HotelController {
             room.setIntro(addRoomRequest.getRoomIntro());
             room.setBookerNum(addRoomRequest.getBookerNum());
             room.setHotel(hotel);
+            room.setRoomId(UUID.randomUUID().toString());
             roomService.saveRoom(room);
         }
 
