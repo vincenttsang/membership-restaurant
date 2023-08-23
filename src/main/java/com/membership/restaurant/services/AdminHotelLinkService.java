@@ -21,6 +21,9 @@ public class AdminHotelLinkService {
 
     public Hotel getAdminsHotel(User user) {
         AdminHotelLink adminHotelLink = adminHotelLinkRepository.getAdminHotelLinkByUserId(user.getId());
+        if (adminHotelLink == null) {
+            return null;
+        }
         return hotelRepository.findHotelById(adminHotelLink.getHotelId());
     }
 
@@ -30,6 +33,7 @@ public class AdminHotelLinkService {
             adminHotelLink = new AdminHotelLink();
         }
         adminHotelLink.setHotelId(hotel.getId());
+        adminHotelLink.setUserId(admin.getId());
         adminHotelLinkRepository.save(adminHotelLink);
     }
 }
