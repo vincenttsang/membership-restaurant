@@ -58,6 +58,11 @@ class MembershipRestaurantApplicationTests {
     }
 
     @Test
+    void addAdminsHotel() {
+
+    }
+
+    @Test
     void addHotelAndRoom() {
         if (hotelRepository.findHotelByName("淳平酒店") == null) {
             Hotel hotel = new Hotel();

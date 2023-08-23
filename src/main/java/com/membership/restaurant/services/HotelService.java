@@ -42,7 +42,7 @@ public class HotelService {
                 if (orderForm.getState() == OrderState.IS_DONE || orderForm.getState() == OrderState.IS_CANCELED) {
 
                 } else if (((orderForm.getStartDate().isAfter(startDate) || orderForm.getStartDate().isEqual(startDate)) && (orderForm.getStartDate().isBefore(endDate) || orderForm.getStartDate().isEqual(endDate)))
-                && (orderForm.getRoomId().getId() == room.getId()) ) {
+                        && (orderForm.getRoomId().getId() == room.getId())) {
                     // room不可用
                     isAvailable = false;
                 }

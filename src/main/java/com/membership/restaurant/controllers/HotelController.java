@@ -1,17 +1,11 @@
 package com.membership.restaurant.controllers;
 
-import com.membership.restaurant.dtos.requests.AddHotelRequest;
-import com.membership.restaurant.dtos.requests.BookRequest;
-import com.membership.restaurant.dtos.requests.EditRoomRequest;
-import com.membership.restaurant.dtos.requests.SearchRequest;
+import com.membership.restaurant.dtos.requests.*;
 import com.membership.restaurant.dtos.responses.*;
 import com.membership.restaurant.entities.*;
 import com.membership.restaurant.repositories.HotelRepository;
 import com.membership.restaurant.repositories.RoomRepository;
-import com.membership.restaurant.services.AuthService;
-import com.membership.restaurant.services.HotelService;
-import com.membership.restaurant.services.OrderFormService;
-import com.membership.restaurant.services.RoomService;
+import com.membership.restaurant.services.*;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -33,15 +27,17 @@ public class HotelController {
 
     private final RoomService roomService;
     private final OrderFormService orderFormService;
+    private final AdminHotelLinkService adminHotelLinkService;
 
     @Autowired
     public HotelController(HotelService hotelService, AuthService authService, RoomService roomService, OrderFormService orderFormService,
                            HotelRepository hotelRepository,
-                           RoomRepository roomRepository) {
+                           RoomRepository roomRepository, AdminHotelLinkService adminHotelLinkService) {
         this.hotelService = hotelService;
         this.authService = authService;
         this.roomService = roomService;
         this.orderFormService = orderFormService;
+        this.adminHotelLinkService = adminHotelLinkService;
     }
 
     @PostMapping(value = "/updateRoom", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -280,6 +276,63 @@ public class HotelController {
         }
         hotelDetailData.setHotel(hotelDetailElements);
         return hotelDetailData;
+    }
+
+    @GetMapping(value = "/addRoom/{session_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map addRoom(@PathVariable String session_id, HttpServletResponse response, @RequestBody @Valid AddRoomRequest addRoomRequest) {
+        HashMap<String, Object> responseObj = new HashMap();
+        HashMap<String, Object> data = new HashMap();
+        if (!authService.validate(session_id)) {
+            responseObj.put("code", HttpServletResponse.SC_UNAUTHORIZED);
+            data.put("message", "401 UNAUTHORIZED - You are not logged-in.");
+            responseObj.put("data", data);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return responseObj;
+        }
+        User user = authService.getUser(session_id);
+        if (!(user.getRole() == Role.ADMIN || (user.getRole() == Role.ROOT))) {
+            responseObj.put("code", HttpServletResponse.SC_FORBIDDEN);
+            data.put("message", "403 FORBIDDEN - You are not admin nor root user.");
+            responseObj.put("data", data);
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return responseObj;
+        }
+        if (addRoomRequest.getRoomNum() <= 0) {
+            responseObj.put("code", HttpServletResponse.SC_BAD_REQUEST);
+            data.put("message", "400 BAD REQUEST - RoomNum must not be smaller than or equal zero!");
+            responseObj.put("data", data);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return responseObj;
+        }
+        Hotel hotel = adminHotelLinkService.getAdminsHotel(user);
+        if (hotel == null) {
+            responseObj.put("code", HttpServletResponse.SC_NOT_FOUND);
+            data.put("message", "404 NOT FOUND - You haven't set a hotel yet.");
+            responseObj.put("data", data);
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return responseObj;
+        }
+
+        for (int i = 0; i < addRoomRequest.getRoomNum(); i++) {
+            Room room = new Room();
+            room.setRoomDetail(addRoomRequest.getRoomDetail());
+            room.setRoomPrice(addRoomRequest.getRoomPrice());
+            room.setRoomImage(addRoomRequest.getRoomImage());
+            room.setRoomType(addRoomRequest.getRoomType());
+            room.setRoomName(addRoomRequest.getRoomName());
+            room.setIntro(addRoomRequest.getRoomIntro());
+            room.setBookerNum(addRoomRequest.getBookerNum());
+            room.setHotel(hotel);
+            roomService.saveRoom(room);
+        }
+
+        data.put("message", "Success.");
+        responseObj.put("data", data);
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        responseObj.put("code", HttpServletResponse.SC_OK);
+
+        return responseObj;
     }
 
     @PostMapping(value = "/cancelRoom/{order_id}", produces = MediaType.APPLICATION_JSON_VALUE)

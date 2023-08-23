@@ -19,4 +19,6 @@ public interface HotelRepository extends JpaRepository<Hotel, Integer> {
     @Transactional
     @Modifying
     void deleteHotelById(int id);
+
+    Hotel findHotelById(Integer id);
 }

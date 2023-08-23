@@ -6,4 +6,5 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource(exported = false)
 public interface AdminHotelLinkRepository extends JpaRepository<AdminHotelLink, Integer> {
+    AdminHotelLink getAdminHotelLinkByUserId(Integer userId);
 }

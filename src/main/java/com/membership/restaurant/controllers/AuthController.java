@@ -41,7 +41,7 @@ public class AuthController {
         }
         responseObj.put("code", HttpServletResponse.SC_OK);
         Map data = new HashMap();
-        data.put("message", "success");
+        data.put("message", "Success.");
         data.put("session_id", sessionId);
         data.put("type", authService.getRole(sessionId));
         responseObj.put("data", data);

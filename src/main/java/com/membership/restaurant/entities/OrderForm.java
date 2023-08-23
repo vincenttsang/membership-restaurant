@@ -76,29 +76,24 @@ public class OrderForm {
     @Column(name = "time")
     @JsonProperty("time")
     private LocalDateTime time;
+    @Column(name = "start_date")
+    @JsonProperty("start_date")
+    private LocalDate startDate;
+    @Column(name = "end_date")
+    @JsonProperty("end_date")
+    private LocalDate endDate;
+    @Column(name = "user_num")
+    @JsonProperty("user_num")
+    private int userNum;
+    @Column(name = "room_num")
+    @JsonProperty("room_num")
+    private int roomNum;
+    @Column(name = "price")
+    @JsonProperty("price")
+    private BigDecimal price;
 
     @PrePersist
     public void setTime() {
         this.time = LocalDateTime.now();
     }
-
-    @Column(name = "start_date")
-    @JsonProperty("start_date")
-    private LocalDate startDate;
-
-    @Column(name = "end_date")
-    @JsonProperty("end_date")
-    private LocalDate endDate;
-
-    @Column(name = "user_num")
-    @JsonProperty("user_num")
-    private int userNum;
-
-    @Column(name = "room_num")
-    @JsonProperty("room_num")
-    private int roomNum;
-
-    @Column(name = "price")
-    @JsonProperty("price")
-    private BigDecimal price;
 }
