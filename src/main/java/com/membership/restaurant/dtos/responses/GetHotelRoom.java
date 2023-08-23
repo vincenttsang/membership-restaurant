@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Data
 public class GetHotelRoom {
-    private int room_id;
+    private String room_id;
     private String room_name;
     private String room_intro;
     private String room_type;
@@ -21,7 +21,7 @@ public class GetHotelRoom {
     }
 
     public GetHotelRoom(Room room) {
-        this.room_id = Integer.valueOf(room.getRoomId());
+        this.room_id = room.getRoomId();
         this.room_name = room.getRoomName();
         this.room_intro = room.getIntro();
         this.room_type = room.getRoomType();

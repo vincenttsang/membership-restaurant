@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.membership</groupId>
     <artifactId>restaurant</artifactId>
-    <version>1.3.4-RELEASE</version>
+    <version>1.3.5-RELEASE</version>
     <name>membership restaurant</name>
     <description>一家会员制餐厅</description>
     <properties>
