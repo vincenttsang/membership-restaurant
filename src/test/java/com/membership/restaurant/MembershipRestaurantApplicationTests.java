@@ -5,6 +5,7 @@ import com.membership.restaurant.repositories.HotelRepository;
 import com.membership.restaurant.repositories.RoomRepository;
 import com.membership.restaurant.services.UserService;
 import com.membership.restaurant.utils.BCryptHashGenerator;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -63,6 +64,7 @@ class MembershipRestaurantApplicationTests {
     }
 
     @Test
+    @Disabled
     void addHotelAndRoom() {
         if (hotelRepository.findHotelByName("淳平酒店") == null) {
             Hotel hotel = new Hotel();

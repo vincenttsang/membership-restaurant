@@ -451,6 +451,7 @@ public class HotelController {
             return responseObj;
         }
         List<GetHotelRoom> bookedRooms = new LinkedList<>();
+
         for (int i = 0; i < bookRequest.getRoomNum(); i++) {
             OrderForm orderForm = new OrderForm();
             orderForm.setHotel(hotelService.getHotel(bookRequest.getHotelId()));
@@ -468,6 +469,8 @@ public class HotelController {
             orderForm.setUserNum(bookRequest.getUserNum());
             BigDecimal price = new BigDecimal(0);
             price = price.add(availRooms.get(i).getRoomPrice());
+            BigDecimal days = new BigDecimal(orderForm.getEndDate().toEpochDay() - orderForm.getStartDate().toEpochDay());
+            price = price.multiply(days);
             orderForm.setPrice(price);
             bookedRooms.add(new GetHotelRoom(availRooms.get(i)));
             orderFormService.saveOrderForm(orderForm);
